@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes.js';
 import employeeRoutes from './routes/employee.routes.js';
 import taskRoutes from './routes/task.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
+
 dotenv.config();
 
 const app = express();
@@ -28,6 +30,9 @@ app.use('/api/employees', employeeRoutes);
 
 // Task Routes
 app.use('/api/tasks', taskRoutes);
+
+// Dashboard Routes
+app.use('/api/dashboard', dashboardRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
