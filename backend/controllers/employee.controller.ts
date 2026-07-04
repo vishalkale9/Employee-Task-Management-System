@@ -22,10 +22,20 @@ export const getEmployee = async (req: Request, res: Response): Promise<any> => 
   }
 };
 
+export const createEmployee = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const employee = await employeeService.createEmployee(req.body);
+    res.status(201).json({ message: "Employee created successfully", employee });
+  } catch (error: any) {
+    if (error.code === 'P2002') return res.status(400).json({ error: "Email already exists" });
+    res.status(500).json({ error: "Failed to create employee", details: error.message });
+  }
+};
+
 export const updateEmployee = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { fullName, role } = req.body;
-    const employee = await employeeService.updateEmployee(Number(req.params.id), { fullName, role });
+    const { fullName, role, department, designation } = req.body;
+    const employee = await employeeService.updateEmployee(Number(req.params.id), { fullName, role, department, designation });
     res.json({ message: "Employee updated successfully", employee });
   } catch (error: any) {
     res.status(500).json({ error: "Failed to update employee", details: error.message });

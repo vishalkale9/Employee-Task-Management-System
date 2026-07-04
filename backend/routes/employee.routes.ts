@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getEmployees, getEmployee, updateEmployee, deleteEmployee } from '../controllers/employee.controller.js';
+import { getEmployees, getEmployee, createEmployee, updateEmployee, deleteEmployee } from '../controllers/employee.controller.js';
 import { protect, adminOnly } from '../middlewares/auth.middleware.js';
 
 const router = Router();
@@ -10,6 +10,7 @@ router.use(adminOnly);
 
 router.get('/', getEmployees);
 router.get('/:id', getEmployee);
+router.post('/', createEmployee);
 router.put('/:id', updateEmployee);
 router.delete('/:id', deleteEmployee);
 
