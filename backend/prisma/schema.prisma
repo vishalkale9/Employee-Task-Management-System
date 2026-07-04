@@ -46,6 +46,7 @@ model Task {
   status      Status   @default(PENDING)
   startDate   DateTime
   dueDate     DateTime
+  attachment  String?
   userId      Int
   assignedTo  User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
