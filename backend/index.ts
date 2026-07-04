@@ -7,8 +7,11 @@ import taskRoutes from './routes/task.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import reportRoutes from './routes/report.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { connectRabbitMQ } from './utils/rabbitmq.js';
+import { startNotificationWorker } from './workers/notification.worker.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,7 +45,10 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/notifications', notificationRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await connectRabbitMQ();
+    await startNotificationWorker();
     console.log(`Server is running on port ${PORT}`);
 })

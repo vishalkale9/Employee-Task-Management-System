@@ -5,4 +5,4 @@ const prisma = new PrismaClient();
 
 export default prisma;
 
-// Forced refresh of TypeScript types
+// Forced refresh of TypeScript types for Notification model
