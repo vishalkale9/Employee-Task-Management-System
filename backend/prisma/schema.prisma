@@ -7,10 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums for roles
 enum Role {
   ADMIN
   EMPLOYEE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
 }
 
 model User {
@@ -19,11 +31,23 @@ model User {
   email       String   @unique
   password    String
   role        Role     @default(EMPLOYEE)
-  
-  // Optional fields for employees
   department  String?
   designation String?
-  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  assignedTasks Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  priority    Priority @default(MEDIUM)
+  status      Status   @default(PENDING)
+  startDate   DateTime
+  dueDate     DateTime
+  userId      Int
+  assignedTo  User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
