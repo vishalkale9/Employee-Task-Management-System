@@ -6,6 +6,7 @@ import employeeRoutes from './routes/employee.routes.js';
 import taskRoutes from './routes/task.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import reportRoutes from './routes/report.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -40,6 +41,7 @@ app.use('/api/tasks', taskRoutes);
 // Dashboard Routes
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
