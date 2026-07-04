@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { LogOut, LayoutDashboard } from 'lucide-react';
+import { EmployeeManagement } from '../components/EmployeeManagement';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,11 +46,9 @@ export const Dashboard = () => {
 
       <main className="flex-grow p-8 max-w-7xl mx-auto w-full">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Overview</h1>
-        <div className="glass p-8 rounded-2xl shadow-xl">
-          <p className="text-gray-600 text-lg">
-            Welcome to your new workspace. The full Dashboard metrics and Kanban board will go here.
-          </p>
-        </div>
+        
+        {user && <EmployeeManagement />}
+        
       </main>
     </div>
   );
