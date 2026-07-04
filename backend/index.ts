@@ -2,7 +2,7 @@ import express, { type Request, type Response } from "express";
 import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes.js';
-
+import employeeRoutes from './routes/employee.routes.js';
 dotenv.config();
 
 const app = express();
@@ -21,6 +21,9 @@ app.get('/', (req: Request, res: Response) => {
 
 // Auth Routes
 app.use('/api/auth', authRoutes);
+
+// Employee Routes (Admin only)
+app.use('/api/employees', employeeRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
