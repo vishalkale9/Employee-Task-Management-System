@@ -1,4 +1,5 @@
 import prisma from '../utils/db.js';
+import { publishNotification } from '../utils/rabbitmq.js';
 
 export const createTask = async (data: any) => {
   if (!data.startDate || !data.dueDate) {
@@ -11,7 +12,15 @@ export const createTask = async (data: any) => {
   }
   data.startDate = startDate;
   data.dueDate = dueDate;
-  return await prisma.task.create({ data });
+  const task = await prisma.task.create({ data });
+  
+  publishNotification({
+    type: 'TASK_ASSIGNED',
+    userId: task.userId,
+    taskTitle: task.title
+  });
+  
+  return task;
 };
 
 export const getTasks = async (userRole: string, userId: number) => {
@@ -52,7 +61,16 @@ export const updateTask = async (id: number, data: any, userRole: string, userId
   if (data.startDate) data.startDate = newStartDate;
   if (data.dueDate) data.dueDate = newDueDate;
 
-  return await prisma.task.update({ where: { id }, data });
+  const updatedTask = await prisma.task.update({ where: { id }, data });
+  
+  if (data.status === 'COMPLETED') {
+    publishNotification({
+      type: 'TASK_COMPLETED',
+      taskTitle: updatedTask.title
+    });
+  }
+  
+  return updatedTask;
 };
 
 export const deleteTask = async (id: number, userRole: string, userId: number) => {
