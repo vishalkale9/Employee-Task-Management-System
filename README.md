@@ -35,7 +35,7 @@ A comprehensive Full Stack Task Management System designed to streamline task as
 ## 🛠️ Technology Stack
 
 - **Frontend**: React, TypeScript, Tailwind CSS, Lucide React (Icons), React Hot Toast, Axios, React Router.
-- **Backend**: Node.js, Express, TypeScript, Prisma ORM, PostgreSQL.
+- **Backend**: Node.js, Express, TypeScript, Prisma ORM, MySQL.
 - **Authentication**: JSON Web Tokens (JWT), bcrypt.
 - **File Uploads**: Multer.
 - **Message Broker**: RabbitMQ (amqplib).
@@ -48,7 +48,7 @@ Follow these steps to run the application locally on your machine.
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [PostgreSQL](https://www.postgresql.org/)
+- [MySQL](https://www.mysql.com/)
 - [RabbitMQ](https://www.rabbitmq.com/) (or run via Docker)
 - [Git](https://git-scm.com/)
 
@@ -71,7 +71,7 @@ cd Employee-Task-Management-System
    Create a `.env` file in the `backend` directory and add the following variables:
    ```env
    PORT=3000
-   DATABASE_URL="postgresql://<username>:<password>@localhost:5432/task_management?schema=public"
+   DATABASE_URL="mysql://<username>:<password>@localhost:3306/task_management"
    JWT_SECRET="your_super_secret_jwt_key"
    RABBITMQ_URL="amqp://localhost"
    ```
@@ -108,19 +108,20 @@ cd Employee-Task-Management-System
 
 ## 🐳 Docker Setup (Optional)
 
-To run the backing services (PostgreSQL and RabbitMQ) using Docker, you can use the following commands.
+To easily run the backing services (MySQL and RabbitMQ) without installing them on your host machine, you can use the provided `docker-compose.yml` file.
 
-### Run PostgreSQL via Docker
-```bash
-docker run --name postgres-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=task_management -p 5432:5432 -d postgres
-```
-*(Update your `DATABASE_URL` in the `.env` file to match these credentials).*
-
-### Run RabbitMQ via Docker
-```bash
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-```
-*(The management plugin is available at `http://localhost:15672` using `guest` / `guest`).*
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Start the services in the background:
+   ```bash
+   docker-compose up -d
+   ```
+   
+This will automatically spin up:
+- **MySQL** on port `3306` (Database name: `task_management`, Password: `password`)
+- **RabbitMQ** on port `5672` (Management UI available at `http://localhost:15672` using `guest` / `guest`).
 
 ---
 
