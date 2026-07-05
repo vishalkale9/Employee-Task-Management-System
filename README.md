@@ -75,12 +75,18 @@ cd Employee-Task-Management-System
    JWT_SECRET="your_super_secret_jwt_key"
    RABBITMQ_URL="amqp://localhost"
    ```
-4. Database Setup (Prisma):
+4. Database Setup (Prisma OR SQL Script):
+   **Option A: Using Prisma (Recommended)**
    Run the following commands to initialize the database schema:
    ```bash
    npx prisma generate
    npx prisma migrate dev --name init
    ```
+   **Option B: Using the SQL Script**
+   If you prefer to manually initialize the database, you can use the provided SQL script:
+   1. Create an empty database named `task_management` in your MySQL server.
+   2. Import the `database_script.sql` (located in the root folder) into this database.
+   3. Run `npx prisma generate` in the `backend` folder to generate the Prisma Client.
 5. Start the Backend Server:
    ```bash
    npm run dev
