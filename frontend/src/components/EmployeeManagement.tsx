@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api/axios';
-import { Edit2, Trash2, Plus, X } from 'lucide-react';
+import { Edit2, Trash2, Plus, X, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const EmployeeManagement = () => {
   const [employees, setEmployees] = useState<any[]>([]);
@@ -15,6 +15,10 @@ export const EmployeeManagement = () => {
     designation: '',
     role: 'EMPLOYEE'
   });
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const fetchEmployees = async () => {
     try {
@@ -67,13 +71,38 @@ export const EmployeeManagement = () => {
     setIsModalOpen(true);
   };
 
+  // Filter and Paginate logic
+  const filteredEmployees = employees.filter(emp => 
+    emp.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (emp.department && emp.department.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+  
+  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage) || 1;
+  const paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="bg-white p-8 rounded-lg shadow mt-8 border border-gray-200">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h2 className="text-xl font-bold text-gray-900">Employee Management</h2>
-        <button onClick={openAddModal} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          <Plus className="w-4 h-4" /> Add Employee
-        </button>
+        
+        <div className="flex gap-4 w-full md:w-auto">
+          <div className="relative flex-grow md:w-64">
+            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Search Name or Dept..." 
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // Reset page on search
+              }}
+            />
+          </div>
+          <button onClick={openAddModal} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap">
+            <Plus className="w-4 h-4" /> Add Employee
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -89,7 +118,7 @@ export const EmployeeManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {employees.map((emp) => (
+            {paginatedEmployees.map((emp) => (
               <tr key={emp.id} className="border-b border-gray-200 hover:bg-gray-50">
                 <td className="p-3 text-gray-800">{emp.fullName}</td>
                 <td className="p-3 text-gray-600">{emp.email}</td>
@@ -106,8 +135,36 @@ export const EmployeeManagement = () => {
                 </td>
               </tr>
             ))}
+            {paginatedEmployees.length === 0 && (
+              <tr>
+                <td colSpan={6} className="p-4 text-center text-gray-500">No employees found.</td>
+              </tr>
+            )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <p className="text-sm text-gray-600">
+          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredEmployees.length)} of {filteredEmployees.length} employees
+        </p>
+        <div className="flex gap-2">
+          <button 
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            className="p-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            className="p-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {isModalOpen && (
